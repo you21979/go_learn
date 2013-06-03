@@ -6,6 +6,7 @@ import (
     "time"
 )
 func main() {
+    fmt.Println(runtime.NumGoroutine())
     go func() {
         fmt.Println("end")
     }()
@@ -18,5 +19,6 @@ func main() {
         runtime.Goexit()
     }()
     fmt.Println("wait")
+    fmt.Println(runtime.NumGoroutine())
     time.Sleep(time.Second)
 }
