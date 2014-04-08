@@ -10,14 +10,17 @@ type State interface {
     Update(a Any)
 }
 
-type Vector struct {
+type Vector2 struct {
     x float64
     y float64
+}
+type Vector3 struct {
+    Vector2
     z float64
 }
 
 type MapObject struct {
-    Vector
+    Vector3
     dir uint16
 }
 
@@ -51,6 +54,10 @@ func (s *StateBattle) Update(a Any) {
     fmt.Println("battle mode")
 }
 func (s *StateBattle) End(a Any) {
+    m := a.(*Monster)
+    m.x = 100
+    m.z = 101
+    fmt.Println(a)
 }
 
 func run(s []State, m Monster) {
