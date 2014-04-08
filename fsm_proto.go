@@ -36,8 +36,7 @@ type Monster struct {
     id int
 }
 
-type StateInit struct {
-}
+type StateInit struct {}
 func (s *StateInit) Begin(a Any) {
     fmt.Println("init begin")
 }
@@ -48,8 +47,7 @@ func (s *StateInit) End(a Any) {
     fmt.Println("init end")
 }
 
-type StateBattle struct {
-}
+type StateBattle struct {}
 func (s *StateBattle) Begin(a Any) {
     fmt.Println("battle begin")
 }
@@ -88,16 +86,39 @@ func (sm *StateMachine) Update(a Any) {
     }
 }
 
+type StateManager struct {
+    sm StateMachine
+    state int
+    state_table []State
+}
+func (m *StateManager) Add(idx int, state State) {
+    m.state_table[idx] = state
+}
+func (m *StateManager) Update(a Any) {
+    m.sm.Update(a)
+}
+func (m *StateManager) GetState() int {
+    return m.state
+}
+func (m *StateManager) SetState(idx int, a Any) {
+    m.state = idx
+    m.sm.SetState(m.state_table[idx], a)
+}
+func NewStateManager(max int) *StateManager {
+    m := new(StateManager)
+    m.state = 0
+    m.sm = StateMachine{}
+    m.state_table = make([]State, max)
+    return m
+}
 
-
-func main() {
-    var state []State = []State{&StateInit{},&StateBattle{}}
+func main() { 
     var m Monster = Monster{}
-    var sm StateMachine = StateMachine{}
-    sm.Update(&m)
-    sm.SetState(state[state_init], &m)
-    sm.Update(&m)
-    sm.SetState(state[state_battle], &m)
-    sm.Update(&m)
-    sm.SetState(state[state_init], &m)
+    fsm := NewStateManager(state_sizeof)
+    fsm.Add(state_init, &StateInit{})
+    fsm.Add(state_battle, &StateBattle{})
+    fsm.SetState(state_init, &m);
+    fsm.Update(&m)
+    fsm.SetState(state_battle, &m);
+    fsm.Update(&m)
 }
