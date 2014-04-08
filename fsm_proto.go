@@ -10,10 +10,15 @@ type State interface {
     Update(a Any)
 }
 
-type MapObject struct {
+type Vector struct {
     x float64
     y float64
     z float64
+}
+
+type MapObject struct {
+    Vector
+    dir uint16
 }
 
 const (
